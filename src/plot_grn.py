@@ -26,12 +26,47 @@ def draw_interaction(ax, ar):
         circle = mplt.patches.Circle(center, a*scale, color=a_color)
         ax.add_patch(circle)
     else:
-        circle = mplt.patches.Circle(center, r*scale, color=t_color)
-        ax.add_patch(circle)
+        if r >= 1.0:
+            pass
+        else:
+            circle = mplt.patches.Circle(center, r*scale, color=t_color)
+            ax.add_patch(circle)
         
     return
 
+g_expected_genes = ["cad", "bcd", "tor", "nos", "gt", "tll", "hb", "kr", "kni", "ftz", "eve", "run", "h"]
+
+def update_genes_and_network(genes, network):
+    locations = {}
+    for gene in g_expected_genes:
+        if gene in genes:
+            i = genes.index(gene)
+        else:
+            i = -1
+        locations[gene] = i
+    for gene in genes:
+        if gene not in g_expected_genes:
+            raise Exception("gene ({}) not expected".format(gene))
+
+
+    updated_network = []
+    for gene1 in g_expected_genes:
+        row = []
+        i1 = locations[gene1]
+        for gene2 in g_expected_genes:
+            i2 = locations[gene2]
+            if i1 < 0 or i2 < 0:
+                a, r = 1.0, 1.0
+            else:
+                a, r = network[i1][i2]
+            row.append((a,r))
+        updated_network.append(row)
+    updated_genes = g_expected_genes[:]
+    return updated_genes, updated_network
+
 def plot_grn(genes, network, file_name):
+    genes, network = update_genes_and_network(genes, network)
+
     fig_width = 6
     fig_height = 6
     n_genes = len(genes)
@@ -74,15 +109,15 @@ def main2():
     return
 
 def Jaeger():
-    genes = ["hb", "Bcd", "gt", "Kr", "Tll", "Kni"]
+    genes = ["hb", "bcd", "gt", "kr", "tll", "kni"]
     network = [
-        # hb        Bcd        gt         Kr         Tll        Kni
+        # hb        bcd        gt         kr         tll        kni
         [(1.0,0.0), (1.0,1.0), (0.0,0.9), (0.7,0.8), (1.0,1.0), (0.0,1.0) ], # hb
-        [(1.0,0.0), (1.0,1.0), (1.0,0.0), (1.0,0.0), (1.0,1.0), (1.0,0.0) ], # Bcd
+        [(1.0,0.0), (1.0,1.0), (1.0,0.0), (1.0,0.0), (1.0,1.0), (1.0,0.0) ], # bcd
         [(1.0,1.0), (1.0,1.0), (1.0,0.0), (0.0,1.0), (1.0,1.0), (0.0,0.7) ], # gt
-        [(0.0,0.7), (1.0,1.0), (0.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,1.0) ], # Kr
-        [(1.0,1.0), (1.0,1.0), (0.0,0.7), (1.0,1.0), (1.0,1.0), (0.0,0.7) ], # Tll
-        [(0.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,0.7), (1.0,1.0), (1.0,1.0) ], # Kni
+        [(0.0,0.7), (1.0,1.0), (0.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,1.0) ], # kr
+        [(1.0,1.0), (1.0,1.0), (0.0,0.7), (1.0,1.0), (1.0,1.0), (0.0,0.7) ], # tll
+        [(0.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,0.7), (1.0,1.0), (1.0,1.0) ], # kni
     ]
     plot_grn(genes, network, "Jaeger.png")
     return
@@ -107,9 +142,60 @@ def Tanevski():
     plot_grn(genes, network, "Tanevski.png")
     return
 
+def Rodriguez():
+    genes = ["cad", "bcd", "nos", "gt", "tll", "hb", "kr", "kni"]
+    network = [
+        # cad       bcd        nos        gt         tll        hb         kr         kni        
+        [(1.0,0.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (1.0,1.0), (0.0,1.0), (1.0,0.0), (1.0,0.0) ], # cad
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,0.0), (1.0,0.0), (1.0,0.0) ], # bcd
+        [(1.0,0.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,1.0) ], # nos
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (0.0,1.0) ], # gt
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,0.0), (0.0,1.0), (0.0,1.0) ], # tll
+        [(0.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,0.0), (0.0,1.0), (0.0,1.0) ], # hb
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,0.0), (0.0,1.0) ], # kr
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (0.0,1.0), (1.0,0.0) ], # kni
+    ]
+    plot_grn(genes, network, "Rodriguez.png")
+    return
+
+def Dilao():
+    genes = ["cad", "bcd", "tor", "gt", "tll", "hb", "kr", "kni"]
+    network = [
+        # cad       bcd        tor        gt         tll        hb         kr         kni        
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0) ], # cad
+        [(0.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (0.0,1.0), (1.0,0.0), (1.0,0.0), (1.0,0.0) ], # bcd
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (0.0,1.0), (1.0,1.0), (1.0,1.0) ], # tor
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (0.0,1.0) ], # gt
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (0.0,1.0), (0.0,1.0) ], # tll
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (0.0,1.0) ], # hb
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,1.0) ], # kr
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,1.0) ], # kni
+    ]
+    plot_grn(genes, network, "Diloa.png")
+    return
+
+def Levine():
+    genes = ["cad", "bcd", "tor", "gt", "tll", "hb", "kr", "kni"]
+    network = [
+        # cad       bcd        tor        gt         tll        hb         kr         kni        
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0) ], # cad
+        [(0.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,0.0), (1.0,1.0), (1.0,0.0) ], # bcd
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0) ], # tor
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0) ], # gt
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0) ], # tll
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,0.0), (0.8,0.6), (0.0,1.0) ], # hb
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0) ], # kr
+        [(1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (1.0,1.0), (0.0,1.0), (1.0,1.0), (1.0,1.0) ], # kni
+    ]
+    plot_grn(genes, network, "Levine.png")
+    return
+
 def main():
     Jaeger()
     Tanevski()
+    Rodriguez()
+    Dilao()
+    Levine()
     return
 
 if __name__ == "__main__":
