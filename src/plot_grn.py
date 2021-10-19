@@ -34,9 +34,37 @@ def draw_interaction(ax, ar):
         
     return
 
-g_expected_genes = ["cad", "bcd", "tor", "nos", "gt", "tll", "hb", "kr", "kni", "ftz", "eve", "run", "h"]
+g_expected_genes = ["cad", "bcd", "tor", "nos", "gt", "tll", "tsl", "hb", "kr", "kni", "ftz", "eve", "run", "h", "prd"]
+g_gene_map = {
+    "cad": "cad",
+    "Cad": "cad",
+    "bcd": "bcd",
+    "Bcd": "bcd",
+    "tor": "tor",
+    "nos": "nos",
+    "Nos": "nos",
+    "gt": "gt",
+    "Gt": "gt",
+    "tll": "tll",
+    "Tsl": "tsl",
+    "hb": "hb",
+    "Hb": "hb",
+    "Kr": "kr",
+    "kr": "kr",
+    "kni": "kni",
+    "Kni": "kni",
+    "ftz": "ftz",
+    "ftz": "ftz",
+    "eve": "eve",
+    "Eve": "eve",
+    "run": "run",
+    "Run": "run",
+    "h": "h",
+    "Prd": "prd",
+}
 
 def update_genes_and_network(genes, network):
+    genes = [ g_gene_map[gene] for gene in genes ]
     locations = {}
     for gene in g_expected_genes:
         if gene in genes:
