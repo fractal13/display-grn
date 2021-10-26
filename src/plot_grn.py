@@ -14,22 +14,25 @@ def draw_interaction(ax, ar):
     r = ar[1]
 
     scale = 0.45
+    epsilon = 0.05
+    diff = abs(a-r)
 
-    if a > r:
-        circle = mplt.patches.Circle(center, a*scale, color=a_color)
-        ax.add_patch(circle)
-        circle = mplt.patches.Circle(center, r*scale, color=r_color)
-        ax.add_patch(circle)
-    elif r > a:
-        circle = mplt.patches.Circle(center, r*scale, color=r_color)
-        ax.add_patch(circle)
-        circle = mplt.patches.Circle(center, a*scale, color=a_color)
-        ax.add_patch(circle)
+    if diff > epsilon:
+        if a > r:
+            circle = mplt.patches.Circle(center, a*scale, color=a_color)
+            ax.add_patch(circle)
+            circle = mplt.patches.Circle(center, r*scale, color=r_color)
+            ax.add_patch(circle)
+        elif r > a:
+            circle = mplt.patches.Circle(center, r*scale, color=r_color)
+            ax.add_patch(circle)
+            circle = mplt.patches.Circle(center, a*scale, color=a_color)
+            ax.add_patch(circle)
     else:
-        if r >= 1.0:
+        if r >= 1.0 or a >= 1.0:
             pass
         else:
-            circle = mplt.patches.Circle(center, r*scale, color=t_color)
+            circle = mplt.patches.Circle(center, max(r,a)*scale, color=t_color)
             ax.add_patch(circle)
         
     return
@@ -95,8 +98,8 @@ def update_genes_and_network(genes, network):
 def plot_grn(genes, network, file_name):
     genes, network = update_genes_and_network(genes, network)
 
-    fig_width = 6
-    fig_height = 6
+    fig_width = 10
+    fig_height = 10
     n_genes = len(genes)
 
     fig = plt.figure(figsize=(fig_width, fig_height), facecolor='white')
